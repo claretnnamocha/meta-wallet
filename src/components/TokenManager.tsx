@@ -1,17 +1,20 @@
-import React, { useState } from 'react';
-import { Plus, Trash2 } from 'lucide-react';
-import { Token, WalletState } from '../types';
-import { addToken, loadWalletState } from '../utils/storage';
-import { createProvider, getTokenInfo } from '../utils/web3';
+import React, { useState } from "react";
+import { Plus, Trash2 } from "lucide-react";
+import { Token, WalletState } from "../types";
+import { addToken, loadWalletState } from "../utils/storage";
+import { createProvider, getTokenInfo } from "../utils/web3";
 
 interface TokenManagerProps {
   walletState: WalletState;
   onStateChange: (state: WalletState) => void;
 }
 
-const TokenManager: React.FC<TokenManagerProps> = ({ walletState, onStateChange }) => {
+const TokenManager: React.FC<TokenManagerProps> = ({
+  walletState,
+  onStateChange,
+}) => {
   const [showAddToken, setShowAddToken] = useState(false);
-  const [tokenAddress, setTokenAddress] = useState('');
+  const [tokenAddress, setTokenAddress] = useState("");
   const [loading, setLoading] = useState(false);
 
   const handleAddToken = async () => {
@@ -19,26 +22,26 @@ const TokenManager: React.FC<TokenManagerProps> = ({ walletState, onStateChange 
 
     setLoading(true);
     const provider = createProvider(walletState.rpcNetwork.url);
-    
+
     try {
       const tokenInfo = await getTokenInfo(tokenAddress, provider);
-      
+
       const token: Token = {
         id: Date.now().toString(),
         address: tokenAddress,
         symbol: tokenInfo.symbol,
         name: tokenInfo.name,
-        decimals: tokenInfo.decimals
+        decimals: Number(tokenInfo.decimals),
       };
 
       const newState = addToken(token);
       onStateChange(newState);
-      setTokenAddress('');
+      setTokenAddress("");
       setShowAddToken(false);
     } catch (error) {
-      alert('Failed to fetch token info. Please check the address.');
+      alert("Failed to fetch token info. Please check the address.");
     }
-    
+
     setLoading(false);
   };
 
@@ -46,7 +49,7 @@ const TokenManager: React.FC<TokenManagerProps> = ({ walletState, onStateChange 
     const state = loadWalletState();
     const newState = {
       ...state,
-      tokens: state.tokens.filter(token => token.id !== tokenId)
+      tokens: state.tokens.filter((token) => token.id !== tokenId),
     };
     onStateChange(newState);
   };
@@ -69,7 +72,9 @@ const TokenManager: React.FC<TokenManagerProps> = ({ walletState, onStateChange 
           <h3 className="text-lg font-semibold mb-4">Add ERC20 Token</h3>
           <div className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Token Contract Address</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Token Contract Address
+              </label>
               <input
                 type="text"
                 value={tokenAddress}
@@ -83,7 +88,7 @@ const TokenManager: React.FC<TokenManagerProps> = ({ walletState, onStateChange 
               disabled={loading}
               className="bg-purple-600 text-white px-4 py-2 rounded-md hover:bg-purple-700 disabled:opacity-50 transition-colors"
             >
-              {loading ? 'Loading...' : 'Add Token'}
+              {loading ? "Loading..." : "Add Token"}
             </button>
           </div>
         </div>
@@ -99,17 +104,23 @@ const TokenManager: React.FC<TokenManagerProps> = ({ walletState, onStateChange 
               <div className="flex-1">
                 <div className="flex items-center space-x-3">
                   <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
-                    <span className="text-white font-semibold text-sm">{token.symbol.charAt(0)}</span>
+                    <span className="text-white font-semibold text-sm">
+                      {token.symbol.charAt(0)}
+                    </span>
                   </div>
                   <div>
                     <h3 className="font-semibold text-lg">{token.name}</h3>
                     <p className="text-gray-600">{token.symbol}</p>
                   </div>
                 </div>
-                <div className="mt-2 text-sm text-gray-500 font-mono">{token.address}</div>
-                <div className="text-xs text-gray-400">Decimals: {token.decimals}</div>
+                <div className="mt-2 text-sm text-gray-500 font-mono">
+                  {token.address}
+                </div>
+                <div className="text-xs text-gray-400">
+                  Decimals: {token.decimals}
+                </div>
               </div>
-              
+
               <button
                 onClick={() => removeToken(token.id)}
                 className="text-red-400 hover:text-red-600 p-2"
@@ -125,7 +136,9 @@ const TokenManager: React.FC<TokenManagerProps> = ({ walletState, onStateChange 
         <div className="text-center py-12 text-gray-500">
           <Plus className="w-16 h-16 mx-auto mb-4 text-gray-300" />
           <p className="text-lg">No tokens added yet</p>
-          <p className="text-sm">Click "Add Token" to start tracking ERC20 tokens</p>
+          <p className="text-sm">
+            Click "Add Token" to start tracking ERC20 tokens
+          </p>
         </div>
       )}
     </div>

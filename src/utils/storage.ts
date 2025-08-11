@@ -28,6 +28,7 @@ export const loadWalletState = (): WalletState => {
 
 export const saveWalletState = (state: WalletState): void => {
   try {
+    console.log('state', state);
     localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
   } catch (error) {
     console.error('Error saving wallet state:', error);
@@ -41,6 +42,7 @@ export const addAccount = (account: Account): WalletState => {
     accounts: [...state.accounts, account],
     activeAccountId: state.activeAccountId || account.id
   };
+  console.log('newState', newState);
   saveWalletState(newState);
   return newState;
 };
@@ -51,6 +53,7 @@ export const addToken = (token: Token): WalletState => {
     ...state,
     tokens: [...state.tokens, token]
   };
+  console.log('newState', newState);
   saveWalletState(newState);
   return newState;
 };
@@ -61,6 +64,7 @@ export const addTransaction = (transaction: Transaction): WalletState => {
     ...state,
     transactions: [transaction, ...state.transactions]
   };
+  console.log('newState', newState);
   saveWalletState(newState);
   return newState;
 };
@@ -71,6 +75,7 @@ export const setActiveAccount = (accountId: string): WalletState => {
     ...state,
     activeAccountId: accountId
   };
+  console.log('newState', newState);
   saveWalletState(newState);
   return newState;
 };
@@ -81,6 +86,7 @@ export const updateRpcNetwork = (network: RpcNetwork): WalletState => {
     ...state,
     rpcNetwork: network
   };
+  console.log('newState', newState);
   saveWalletState(newState);
   return newState;
 };

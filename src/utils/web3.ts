@@ -29,7 +29,8 @@ export const getTokenBalance = async (
 ): Promise<string> => {
   const contract = new ethers.Contract(tokenAddress, ERC20_ABI, provider);
   const balance = await contract.balanceOf(walletAddress);
-  const decimals = await contract.decimals();
+  const decimalsBigInt = await contract.decimals();
+  const decimals = Number(decimalsBigInt);
   return ethers.formatUnits(balance, decimals);
 };
 
