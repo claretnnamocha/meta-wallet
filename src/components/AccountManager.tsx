@@ -170,7 +170,8 @@ const AccountManager: React.FC<AccountManagerProps> = ({
       {showAddAccount && (
         <div className="bg-gray-50 p-6 rounded-lg mb-6">
           <h3 className="text-lg font-semibold mb-4">Add New Account</h3>
-          <div className="space-y-4">
+          <div>{/* Use div instead of form to avoid password detection */}
+            <div className="space-y-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 Account Name
@@ -181,6 +182,8 @@ const AccountManager: React.FC<AccountManagerProps> = ({
                 onChange={(e) => setNewAccountName(e.target.value)}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
                 placeholder="My Account"
+                autoComplete="off"
+                data-form-type="other"
               />
             </div>
             <div>
@@ -189,11 +192,32 @@ const AccountManager: React.FC<AccountManagerProps> = ({
               </label>
               <div className="relative">
                 <input
-                  type={showPrivateKey ? "text" : "password"}
+                  type="text"
                   value={newPrivateKey}
                   onChange={(e) => setNewPrivateKey(e.target.value)}
+                  onFocus={(e) => {
+                    e.target.setAttribute('autocomplete', 'nope-' + Math.random());
+                    e.target.setAttribute('name', 'field-' + Math.random());
+                  }}
                   className="w-full px-3 py-2 pr-10 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
                   placeholder="0x..."
+                  autoComplete="nope"
+                  autoCorrect="off"
+                  autoCapitalize="off"
+                  data-form-type="other"
+                  data-lpignore="true"
+                  data-1p-ignore="true"
+                  data-bwignore="true"
+                  data-dashlane-rid="false"
+                  data-kwift="false"
+                  spellCheck="false"
+                  name={`private-key-${Math.random()}`}
+                  id={`private-key-${Math.random()}`}
+                  role="textbox"
+                  style={{ 
+                    fontFamily: showPrivateKey ? 'inherit' : 'text-security-disc, -webkit-text-security-disc, monospace',
+                    WebkitTextSecurity: showPrivateKey ? 'none' : 'disc'
+                  } as React.CSSProperties}
                 />
                 <button
                   type="button"
@@ -209,11 +233,13 @@ const AccountManager: React.FC<AccountManagerProps> = ({
               </div>
             </div>
             <button
+              type="button"
               onClick={handleAddAccount}
               className="bg-purple-600 text-white px-4 py-2 rounded-md hover:bg-purple-700 transition-colors"
             >
               Add Account
             </button>
+            </div>
           </div>
         </div>
       )}
