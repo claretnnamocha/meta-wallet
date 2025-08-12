@@ -90,3 +90,32 @@ export const updateRpcNetwork = (network: RpcNetwork): WalletState => {
   saveWalletState(newState);
   return newState;
 };
+
+export const deleteAccount = (accountId: string): WalletState => {
+  const state = loadWalletState();
+  const newAccounts = state.accounts.filter(account => account.id !== accountId);
+  
+  // If we're deleting the active account, set a new active account or null
+  let newActiveAccountId = state.activeAccountId;
+  if (state.activeAccountId === accountId) {
+    newActiveAccountId = newAccounts.length > 0 ? newAccounts[0].id : null;
+  }
+  
+  const newState = {
+    ...state,
+    accounts: newAccounts,
+    activeAccountId: newActiveAccountId
+  };
+  saveWalletState(newState);
+  return newState;
+};
+
+export const deleteToken = (tokenId: string): WalletState => {
+  const state = loadWalletState();
+  const newState = {
+    ...state,
+    tokens: state.tokens.filter(token => token.id !== tokenId)
+  };
+  saveWalletState(newState);
+  return newState;
+};
