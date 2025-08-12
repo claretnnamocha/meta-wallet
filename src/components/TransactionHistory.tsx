@@ -1,12 +1,14 @@
 import React from 'react';
-import { ExternalLink, ArrowUpRight, ArrowDownLeft, Clock, CheckCircle, XCircle } from 'lucide-react';
+import { ExternalLink, ArrowUpRight, ArrowDownLeft, Clock, CheckCircle, XCircle, Trash2 } from 'lucide-react';
 import { WalletState } from '../types';
+import { clearAllTransactions } from '../utils/storage';
 
 interface TransactionHistoryProps {
   walletState: WalletState;
+  onStateChange: (newState: WalletState) => void;
 }
 
-const TransactionHistory: React.FC<TransactionHistoryProps> = ({ walletState }) => {
+const TransactionHistory: React.FC<TransactionHistoryProps> = ({ walletState, onStateChange }) => {
   const activeAccount = walletState.accounts.find(acc => acc.id === walletState.activeAccountId);
   
   const accountTransactions = walletState.transactions.filter(
@@ -43,6 +45,13 @@ const TransactionHistory: React.FC<TransactionHistoryProps> = ({ walletState }) 
     }
   };
 
+  const handleClearAllTransactions = () => {
+    if (window.confirm('Are you sure you want to clear all transactions? This action cannot be undone.')) {
+      const newState = clearAllTransactions();
+      onStateChange(newState);
+    }
+  };
+
   if (!activeAccount) {
     return (
       <div className="p-6">
@@ -57,7 +66,18 @@ const TransactionHistory: React.FC<TransactionHistoryProps> = ({ walletState }) 
 
   return (
     <div className="p-6">
-      <h2 className="text-2xl font-bold text-gray-800 mb-6">Transaction History</h2>
+      <div className="flex justify-between items-center mb-6">
+        <h2 className="text-2xl font-bold text-gray-800">Transaction History</h2>
+        {accountTransactions.length > 0 && (
+          <button
+            onClick={handleClearAllTransactions}
+            className="flex items-center space-x-2 px-4 py-2 text-sm font-medium text-red-600 bg-red-50 border border-red-200 rounded-lg hover:bg-red-100 hover:border-red-300 transition-colors"
+          >
+            <Trash2 className="w-4 h-4" />
+            <span>Clear All</span>
+          </button>
+        )}
+      </div>
       
       <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
         {accountTransactions.length === 0 ? (

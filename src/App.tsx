@@ -27,7 +27,7 @@ function App() {
       case 'send':
         return <SendTransaction walletState={walletState} onStateChange={setWalletState} />;
       case 'history':
-        return <TransactionHistory walletState={walletState} />;
+        return <TransactionHistory walletState={walletState} onStateChange={setWalletState} />;
       case 'lookup':
         return <AddressLookup walletState={walletState} />;
       case 'settings':

@@ -119,3 +119,13 @@ export const deleteToken = (tokenId: string): WalletState => {
   saveWalletState(newState);
   return newState;
 };
+
+export const clearAllTransactions = (): WalletState => {
+  const state = loadWalletState();
+  const newState = {
+    ...state,
+    transactions: []
+  };
+  saveWalletState(newState);
+  return newState;
+};
