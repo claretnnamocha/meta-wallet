@@ -83,3 +83,40 @@ export const getAddressFromPrivateKey = (privateKey: string): string => {
   const wallet = new ethers.Wallet(privateKey);
   return wallet.address;
 };
+
+export const isValidTransactionHash = (hash: string): boolean => {
+  return /^0x[a-fA-F0-9]{64}$/.test(hash);
+};
+
+export const getTransaction = async (
+  hash: string,
+  provider: ethers.Provider
+): Promise<ethers.TransactionResponse | null> => {
+  try {
+    return await provider.getTransaction(hash);
+  } catch (error) {
+    return null;
+  }
+};
+
+export const getTransactionReceipt = async (
+  hash: string,
+  provider: ethers.Provider
+): Promise<ethers.TransactionReceipt | null> => {
+  try {
+    return await provider.getTransactionReceipt(hash);
+  } catch (error) {
+    return null;
+  }
+};
+
+export const getBlock = async (
+  blockNumber: number,
+  provider: ethers.Provider
+): Promise<ethers.Block | null> => {
+  try {
+    return await provider.getBlock(blockNumber);
+  } catch (error) {
+    return null;
+  }
+};
