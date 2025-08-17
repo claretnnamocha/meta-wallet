@@ -3,6 +3,8 @@ import { Plus, Trash2 } from "lucide-react";
 import { Token, WalletState } from "../types";
 import { addToken, loadWalletState } from "../utils/storage";
 import { createProvider, getTokenInfo } from "../utils/web3";
+import Modal from "./Modal";
+import { useModal } from "../hooks/useModal";
 
 interface TokenManagerProps {
   walletState: WalletState;
@@ -16,6 +18,7 @@ const TokenManager: React.FC<TokenManagerProps> = ({
   const [showAddToken, setShowAddToken] = useState(false);
   const [tokenAddress, setTokenAddress] = useState("");
   const [loading, setLoading] = useState(false);
+  const { modalState, hideModal, showError } = useModal();
 
   const handleAddToken = async () => {
     if (!tokenAddress) return;
@@ -39,7 +42,7 @@ const TokenManager: React.FC<TokenManagerProps> = ({
       setTokenAddress("");
       setShowAddToken(false);
     } catch (error) {
-      alert("Failed to fetch token info. Please check the address.");
+      showError("Failed to Add Token", "Failed to fetch token information. Please check the contract address and try again.");
     }
 
     setLoading(false);
@@ -141,6 +144,18 @@ const TokenManager: React.FC<TokenManagerProps> = ({
           </p>
         </div>
       )}
+
+      <Modal
+        isOpen={modalState.isOpen}
+        onClose={hideModal}
+        type={modalState.type}
+        title={modalState.title}
+        message={modalState.message}
+        onConfirm={modalState.onConfirm}
+        confirmText={modalState.confirmText}
+        cancelText={modalState.cancelText}
+        showCancel={modalState.showCancel}
+      />
     </div>
   );
 };

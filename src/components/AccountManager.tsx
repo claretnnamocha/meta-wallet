@@ -17,6 +17,8 @@ import {
   getBalance,
   getTokenBalance,
 } from "../utils/web3";
+import Modal from "./Modal";
+import { useModal } from "../hooks/useModal";
 
 interface AccountManagerProps {
   walletState: WalletState;
@@ -37,6 +39,7 @@ const AccountManager: React.FC<AccountManagerProps> = ({
   const [loading, setLoading] = useState(false);
   const [copiedAddress, setCopiedAddress] = useState<string | null>(null);
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
+  const { modalState, hideModal, showError, showWarning } = useModal();
 
   const fetchBalances = async () => {
     if (!walletState.activeAccountId) return;
@@ -113,7 +116,7 @@ const AccountManager: React.FC<AccountManagerProps> = ({
       setNewPrivateKey("");
       setShowAddAccount(false);
     } catch (error) {
-      alert("Invalid private key");
+      showError("Invalid Private Key", "The private key you entered is invalid. Please check and try again.");
     }
   };
 
@@ -130,7 +133,7 @@ const AccountManager: React.FC<AccountManagerProps> = ({
 
   const handleDeleteAccount = (accountId: string) => {
     if (walletState.accounts.length === 1) {
-      alert("Cannot delete the last account");
+      showWarning("Cannot Delete Account", "You cannot delete the last account. Please add another account before deleting this one.");
       return;
     }
 
@@ -348,6 +351,18 @@ const AccountManager: React.FC<AccountManagerProps> = ({
           </div>
         </div>
       )}
+
+      <Modal
+        isOpen={modalState.isOpen}
+        onClose={hideModal}
+        type={modalState.type}
+        title={modalState.title}
+        message={modalState.message}
+        onConfirm={modalState.onConfirm}
+        confirmText={modalState.confirmText}
+        cancelText={modalState.cancelText}
+        showCancel={modalState.showCancel}
+      />
     </div>
   );
 };

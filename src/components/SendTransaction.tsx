@@ -3,6 +3,8 @@ import { Send, AlertCircle } from 'lucide-react';
 import { WalletState, Transaction } from '../types';
 import { createProvider, createWallet, sendEther, sendToken, isValidAddress } from '../utils/web3';
 import { addTransaction } from '../utils/storage';
+import Modal from './Modal';
+import { useModal } from '../hooks/useModal';
 
 interface SendTransactionProps {
   walletState: WalletState;
@@ -15,6 +17,7 @@ const SendTransaction: React.FC<SendTransactionProps> = ({ walletState, onStateC
   const [selectedToken, setSelectedToken] = useState('ETH');
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<{ recipient?: string; amount?: string }>({});
+  const { modalState, hideModal, showSuccess, showError } = useModal();
 
   const activeAccount = walletState.accounts.find(acc => acc.id === walletState.activeAccountId);
 
@@ -77,10 +80,10 @@ const SendTransaction: React.FC<SendTransactionProps> = ({ walletState, onStateC
       setAmount('');
       setSelectedToken('ETH');
       
-      alert(`Transaction sent! Hash: ${txResponse.hash}`);
+      showSuccess("Transaction Sent!", `Your transaction has been submitted successfully. Transaction hash: ${txResponse.hash}`);
     } catch (error) {
       console.error('Transaction failed:', error);
-      alert('Transaction failed. Please try again.');
+      showError("Transaction Failed", "Your transaction could not be processed. Please check your inputs and try again.");
     }
 
     setLoading(false);
@@ -170,6 +173,18 @@ const SendTransaction: React.FC<SendTransactionProps> = ({ walletState, onStateC
           </button>
         </div>
       </div>
+
+      <Modal
+        isOpen={modalState.isOpen}
+        onClose={hideModal}
+        type={modalState.type}
+        title={modalState.title}
+        message={modalState.message}
+        onConfirm={modalState.onConfirm}
+        confirmText={modalState.confirmText}
+        cancelText={modalState.cancelText}
+        showCancel={modalState.showCancel}
+      />
     </div>
   );
 };
