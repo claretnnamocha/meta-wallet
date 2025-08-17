@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Plus, Trash2 } from "lucide-react";
 import { Token, WalletState } from "../types";
-import { addToken, loadWalletState } from "../utils/storage";
+import { addToken, deleteToken } from "../utils/storage";
 import { createProvider, getTokenInfo } from "../utils/web3";
 import Modal from "./Modal";
 import { useModal } from "../hooks/useModal";
@@ -18,7 +18,7 @@ const TokenManager: React.FC<TokenManagerProps> = ({
   const [showAddToken, setShowAddToken] = useState(false);
   const [tokenAddress, setTokenAddress] = useState("");
   const [loading, setLoading] = useState(false);
-  const { modalState, hideModal, showError } = useModal();
+  const { modalState, hideModal, showError, showConfirm } = useModal();
 
   const handleAddToken = async () => {
     if (!tokenAddress) return;
@@ -48,13 +48,17 @@ const TokenManager: React.FC<TokenManagerProps> = ({
     setLoading(false);
   };
 
-  const removeToken = (tokenId: string) => {
-    const state = loadWalletState();
-    const newState = {
-      ...state,
-      tokens: state.tokens.filter((token) => token.id !== tokenId),
-    };
-    onStateChange(newState);
+  const handleRemoveTokenClick = (tokenId: string, tokenName: string) => {
+    showConfirm(
+      "Remove Token",
+      `Are you sure you want to remove ${tokenName} from your token list? This will not affect your actual token balance.`,
+      () => {
+        const newState = deleteToken(tokenId);
+        onStateChange(newState);
+      },
+      "Remove",
+      "Cancel"
+    );
   };
 
   return (
@@ -125,8 +129,9 @@ const TokenManager: React.FC<TokenManagerProps> = ({
               </div>
 
               <button
-                onClick={() => removeToken(token.id)}
+                onClick={() => handleRemoveTokenClick(token.id, token.name)}
                 className="text-red-400 hover:text-red-600 p-2"
+                title="Remove token"
               >
                 <Trash2 className="w-4 h-4" />
               </button>
