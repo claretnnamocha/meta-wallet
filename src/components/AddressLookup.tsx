@@ -13,6 +13,7 @@ import {
   getTransactionReceipt,
   getBlock
 } from '../utils/web3';
+import { formatCurrency } from '../utils/formatCurrency';
 import Modal from './Modal';
 import { useModal } from '../hooks/useModal';
 
@@ -206,7 +207,7 @@ const AddressLookup: React.FC<AddressLookupProps> = ({ walletState }) => {
               <div>
                 <h4 className="font-medium text-gray-700 mb-2">ETH Balance</h4>
                 <div className="text-2xl font-bold text-gray-800">
-                  {parseFloat(results.ethBalance).toFixed(6)} ETH
+                  {formatCurrency(results.ethBalance, 6)} ETH
                 </div>
               </div>
               
@@ -239,7 +240,7 @@ const AddressLookup: React.FC<AddressLookupProps> = ({ walletState }) => {
                     </div>
                     <div className="text-right">
                       <div className="font-bold">
-                        {parseFloat(results.tokenBalances[token.symbol] || '0').toFixed(4)}
+                        {formatCurrency(results.tokenBalances[token.symbol] || '0', 4)}
                       </div>
                       <div className="text-sm text-gray-600">{token.symbol}</div>
                     </div>
@@ -309,11 +310,11 @@ const AddressLookup: React.FC<AddressLookupProps> = ({ walletState }) => {
               <div className="grid md:grid-cols-3 gap-4">
                 <div>
                   <h4 className="font-medium text-gray-700 mb-1">Value</h4>
-                  <p className="text-sm font-semibold">{parseFloat(results.value).toFixed(6)} ETH</p>
+                  <p className="text-sm font-semibold">{formatCurrency(results.value, 6)} ETH</p>
                 </div>
                 <div>
                   <h4 className="font-medium text-gray-700 mb-1">Gas Price</h4>
-                  <p className="text-sm">{results.gasPrice ? `${parseFloat(results.gasPrice).toFixed(2)} Gwei` : 'N/A'}</p>
+                  <p className="text-sm">{results.gasPrice ? `${formatCurrency(results.gasPrice, 2)} Gwei` : 'N/A'}</p>
                 </div>
                 <div>
                   <h4 className="font-medium text-gray-700 mb-1">Gas Used</h4>

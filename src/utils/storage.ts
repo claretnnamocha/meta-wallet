@@ -8,8 +8,8 @@ const defaultState: WalletState = {
   tokens: [],
   transactions: [],
   rpcNetwork: {
-    name: 'Ganache',
-    url: 'http://localhost:8545'
+    name: 'Keeway',
+    url: 'https://rpc.keeway.io'
   }
 };
 

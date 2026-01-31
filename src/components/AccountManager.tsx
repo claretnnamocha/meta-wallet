@@ -17,6 +17,7 @@ import {
   getBalance,
   getTokenBalance,
 } from "../utils/web3";
+import { formatCurrency } from "../utils/formatCurrency";
 import Modal from "./Modal";
 import { useModal } from "../hooks/useModal";
 
@@ -296,16 +297,17 @@ const AccountManager: React.FC<AccountManagerProps> = ({
               {account.id === walletState.activeAccountId && activeBalances && (
                 <div className="text-right">
                   <div className="text-2xl font-bold text-gray-800">
-                    {parseFloat(activeBalances.eth).toFixed(4)} ETH
+                    {formatCurrency(activeBalances.eth, 4)} ETH
                   </div>
                   {walletState.tokens.length > 0 && (
                     <div className="space-y-1 mt-2">
                       {walletState.tokens.map((token) => (
                         <div key={token.id} className="text-sm text-gray-600">
                           {activeBalances.tokens[token.id]
-                            ? `${parseFloat(
-                                activeBalances.tokens[token.id]
-                              ).toFixed(4)} ${token.symbol}`
+                            ? `${formatCurrency(
+                                activeBalances.tokens[token.id],
+                                4
+                              )} ${token.symbol}`
                             : `- ${token.symbol}`}
                         </div>
                       ))}

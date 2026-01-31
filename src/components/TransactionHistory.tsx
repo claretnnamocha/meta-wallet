@@ -2,6 +2,7 @@ import React from 'react';
 import { ExternalLink, ArrowUpRight, ArrowDownLeft, Clock, CheckCircle, XCircle, Trash2 } from 'lucide-react';
 import { WalletState } from '../types';
 import { clearAllTransactions } from '../utils/storage';
+import { formatCurrency } from '../utils/formatCurrency';
 
 interface TransactionHistoryProps {
   walletState: WalletState;
@@ -101,7 +102,7 @@ const TransactionHistory: React.FC<TransactionHistoryProps> = ({ walletState, on
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center space-x-2 mb-1">
                         <span className="text-sm font-medium text-gray-900">
-                          Sent {transaction.value} {transaction.token || 'ETH'}
+                          Sent {formatCurrency(transaction.value, 4)} {transaction.token || 'ETH'}
                         </span>
                         <div className="flex items-center space-x-1">
                           {getStatusIcon(transaction.status)}
